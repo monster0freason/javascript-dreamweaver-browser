@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { executeJavaScript, formatErrorMessage, validateJavaScript } from '@/utils/codeProcessor';
+import { validateJavaScript } from '@/utils/codeProcessor';
 import { highlightCode } from '@/utils/syntaxHighlighter';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -130,33 +130,6 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     
     setCursorPosition({ line, column });
     onCursorPositionChange(line, column);
-  };
-  
-  const executeCode = () => {
-    try {
-      const result = executeJavaScript(code);
-      
-      if (result.success) {
-        setErrorLine(undefined);
-        toast({
-          title: "Code executed successfully",
-          variant: "default",
-        });
-      } else if (result.error) {
-        const formattedError = formatErrorMessage(result.error);
-        setErrorLine(result.errorLine);
-        toast({
-          title: "Error",
-          description: formattedError,
-          variant: "destructive",
-        });
-      }
-      
-      onResultsChange(result.output, result.error, result.errorLine);
-    } catch (error) {
-      console.error("Execution error:", error);
-      onResultsChange([], "An unexpected error occurred during execution");
-    }
   };
   
   return (

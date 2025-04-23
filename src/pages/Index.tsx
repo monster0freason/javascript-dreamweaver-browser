@@ -1,11 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from '@/components/Header';
 import CodeEditor from '@/components/CodeEditor';
 import Console from '@/components/Console';
 import Footer from '@/components/Footer';
 import { useToast } from '@/hooks/use-toast';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { executeJavaScript } from '@/utils/codeProcessor';
 
 // Sample initial code
 const initialCode = `// Welcome to JavaScript Dreamweaver!
@@ -38,20 +39,35 @@ const Index = () => {
   const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 0 });
   
   const { toast } = useToast();
+  const codeEditorRef = useRef<{
+    executeCode: () => void;
+  } | null>(null);
 
   // Handle code execution
   const handleRunCode = () => {
-    const editorComponent = document.querySelector('div[data-component-name="CodeEditor"]') as HTMLElement;
-    if (editorComponent) {
-      // This would normally call a method on the component, but we're using a direct approach here
-      executeCode();
+    const result = executeJavaScript(code);
+    
+    // Update console output and error state based on execution results
+    setConsoleOutput(result.output);
+    
+    if (result.error) {
+      setError(result.error);
+      setErrorLine(result.errorLine);
+      setStatus('error');
+      toast({
+        title: "Error",
+        description: result.error,
+        variant: "destructive",
+      });
+    } else {
+      setError(undefined);
+      setErrorLine(undefined);
+      setStatus('success');
+      toast({
+        title: "Code executed successfully",
+        variant: "default",
+      });
     }
-  };
-  
-  const executeCode = () => {
-    // The actual execution happens in the CodeEditor component
-    // This is just to coordinate the UI state
-    setStatus('idle');
   };
 
   // Handle results from code execution

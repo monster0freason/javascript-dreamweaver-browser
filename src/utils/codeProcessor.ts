@@ -94,7 +94,7 @@ function formatOutput(value: any): string {
   
   try {
     if (typeof value === 'object') {
-      return JSON.stringify(value, getCircularReplacer());
+      return JSON.stringify(value, getCircularReplacer(), 2);
     }
   } catch (e) {
     return String(value);
