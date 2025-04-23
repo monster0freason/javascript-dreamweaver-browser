@@ -29,6 +29,11 @@ console.log("Doubled numbers:", doubled);
 // console.log(undefinedVariable);
 `;
 
+// Simple starter template for new files
+const newFileTemplate = `// Write your JavaScript code here...
+console.log("Hello, World!");
+`;
+
 const Index = () => {
   const [code, setCode] = useState(initialCode);
   const [fileName, setFileName] = useState('example.js');
@@ -39,9 +44,6 @@ const Index = () => {
   const [cursorPosition, setCursorPosition] = useState({ line: 1, column: 0 });
   
   const { toast } = useToast();
-  const codeEditorRef = useRef<{
-    executeCode: () => void;
-  } | null>(null);
 
   // Handle code execution
   const handleRunCode = () => {
@@ -80,9 +82,9 @@ const Index = () => {
 
   // Handle creating a new file
   const handleNewFile = () => {
-    if (code !== initialCode) {
+    if (code !== initialCode && code !== newFileTemplate) {
       if (confirm('Create a new file? All unsaved changes will be lost.')) {
-        setCode('// Write your JavaScript code here...\n\n');
+        setCode(newFileTemplate);
         setFileName('untitled.js');
         setConsoleOutput([]);
         setError(undefined);
@@ -93,8 +95,11 @@ const Index = () => {
         });
       }
     } else {
-      setCode('// Write your JavaScript code here...\n\n');
+      setCode(newFileTemplate);
       setFileName('untitled.js');
+      setConsoleOutput([]);
+      setError(undefined);
+      setStatus('idle');
     }
   };
 
