@@ -89,10 +89,57 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     lineNumbersRef.current.innerHTML = numbers;
   };
   
+  // Fixed cursor position calculation function
+  const calculateCursorPosition = (cursorIndex: number, text: string): { line: number, column: number } => {
+    // Handle empty text case
+    if (!text) return { line: 1, column: 1 };
+    
+    // Get all line break indices
+    const lineBreaks = [];
+    let index = -1;
+    
+    while ((index = text.indexOf('\n', index + 1)) !== -1) {
+      lineBreaks.push(index);
+    }
+    
+    // Calculate line and column
+    if (lineBreaks.length === 0 || cursorIndex <= lineBreaks[0]) {
+      // First line
+      return { line: 1, column: cursorIndex + 1 };
+    }
+    
+    // Find which line the cursor is on
+    let lineIndex = 0;
+    while (lineIndex < lineBreaks.length && cursorIndex > lineBreaks[lineIndex]) {
+      lineIndex++;
+    }
+    
+    const line = lineIndex + 1;
+    const previousLineBreak = lineIndex > 0 ? lineBreaks[lineIndex - 1] : -1;
+    const column = cursorIndex - previousLineBreak;
+    
+    return { line, column };
+  };
+  
+  const updateCursorPosition = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    
+    const cursorIndex = textarea.selectionStart;
+    const position = calculateCursorPosition(cursorIndex, code);
+    
+    setCursorPosition(position);
+    onCursorPositionChange(position.line, position.column);
+  };
+  
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setCode(e.target.value);
-    // Update cursor position right after text change
-    setTimeout(updateCursorPosition, 0);
+    const newCode = e.target.value;
+    setCode(newCode);
+    
+    // Capture cursor position after change to ensure it's correct
+    requestAnimationFrame(() => {
+      updateCursorPosition();
+    });
   };
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -111,29 +158,16 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       setCode(newCode);
       
       // Move cursor after the tab
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         textarea.selectionStart = textarea.selectionEnd = start + 2;
         updateCursorPosition();
-      }, 0);
+      });
     }
   };
   
-  const updateCursorPosition = () => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    
-    const cursorPosition = textarea.selectionStart;
-    const textBeforeCursor = code.substring(0, cursorPosition);
-    const line = (textBeforeCursor.match(/\n/g) || []).length + 1;
-    const lastNewLine = textBeforeCursor.lastIndexOf('\n');
-    const column = lastNewLine === -1 ? cursorPosition + 1 : cursorPosition - lastNewLine;
-    
-    setCursorPosition({ line, column });
-    onCursorPositionChange(line, column);
-  };
-  
-  const handleCursorPositionChange = () => {
-    updateCursorPosition();
+  // Event handlers for cursor position updates
+  const handleCursorPosition = () => {
+    requestAnimationFrame(updateCursorPosition);
   };
   
   return (
@@ -160,9 +194,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
               value={code}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
-              onClick={handleCursorPositionChange}
-              onKeyUp={handleCursorPositionChange}
-              onMouseUp={handleCursorPositionChange}
+              onClick={handleCursorPosition}
+              onKeyUp={handleCursorPosition}
+              onMouseUp={handleCursorPosition}
+              onSelect={handleCursorPosition}
               className="editor-textarea absolute top-0 left-0 bg-transparent text-transparent caret-editor-cursor"
               spellCheck="false"
               autoCapitalize="off"
