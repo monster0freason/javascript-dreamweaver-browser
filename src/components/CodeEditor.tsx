@@ -3,8 +3,10 @@ import React, { useState, useRef, useEffect } from 'react';
 import { executeJavaScript, formatErrorMessage, validateJavaScript } from '@/utils/codeProcessor';
 import { highlightCode } from '@/utils/syntaxHighlighter';
 import { toast } from '@/hooks/use-toast';
-import { Resizable } from '@/components/ui/resizable';
 import { cn } from '@/lib/utils';
+
+// Remove the incorrect import
+// import { Resizable } from '@/components/ui/resizable';
 
 interface CodeEditorProps {
   initialCode?: string;
