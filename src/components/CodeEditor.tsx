@@ -5,9 +5,6 @@ import { highlightCode } from '@/utils/syntaxHighlighter';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
-// Remove the incorrect import
-// import { Resizable } from '@/components/ui/resizable';
-
 interface CodeEditorProps {
   initialCode?: string;
   onCodeChange: (code: string) => void;
@@ -94,6 +91,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
   
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setCode(e.target.value);
+    // Update cursor position right after text change
+    setTimeout(updateCursorPosition, 0);
   };
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -114,11 +113,12 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
       // Move cursor after the tab
       setTimeout(() => {
         textarea.selectionStart = textarea.selectionEnd = start + 2;
+        updateCursorPosition();
       }, 0);
     }
   };
   
-  const handleCursorPositionChange = () => {
+  const updateCursorPosition = () => {
     const textarea = textareaRef.current;
     if (!textarea) return;
     
@@ -130,6 +130,10 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     
     setCursorPosition({ line, column });
     onCursorPositionChange(line, column);
+  };
+  
+  const handleCursorPositionChange = () => {
+    updateCursorPosition();
   };
   
   return (
@@ -158,6 +162,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
               onKeyDown={handleKeyDown}
               onClick={handleCursorPositionChange}
               onKeyUp={handleCursorPositionChange}
+              onMouseUp={handleCursorPositionChange}
               className="editor-textarea absolute top-0 left-0 bg-transparent text-transparent caret-editor-cursor"
               spellCheck="false"
               autoCapitalize="off"
