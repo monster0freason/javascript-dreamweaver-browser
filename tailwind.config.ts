@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,23 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				editor: {
+					bg: '#1A1F2C',
+					text: '#E5DEFF',
+					line: '#333333',
+					selection: 'rgba(122, 103, 238, 0.3)',
+					cursor: '#9b87f5',
+					error: '#ea384c',
+					success: '#4ADE80',
+					warning: '#FBBF24',
+					comment: '#8E9196',
+					string: '#FEC6A1',
+					keyword: '#9b87f5',
+					function: '#0EA5E9',
+					variable: '#D3E4FD',
+					number: '#D946EF',
+					operator: '#F97316'
 				}
 			},
 			borderRadius: {
@@ -84,11 +102,19 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'cursor-blink': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'cursor-blink': 'cursor-blink 1s infinite'
+			},
+			fontFamily: {
+				'mono': ['Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace']
 			}
 		}
 	},

@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -79,6 +73,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+    
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -97,5 +92,63 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .editor-container {
+    height: calc(100vh - 8rem);
+  }
+
+  .editor-wrapper {
+    @apply h-full overflow-hidden rounded-md border;
+  }
+
+  .editor-textarea {
+    @apply font-mono text-editor-text bg-editor-bg p-4 outline-none resize-none w-full h-full;
+    tab-size: 2;
+    -moz-tab-size: 2;
+  }
+
+  .line-numbers {
+    @apply font-mono text-editor-line p-4 text-right select-none bg-editor-bg border-r border-editor-line;
+    min-width: 3rem;
+  }
+
+  .editor-error {
+    @apply bg-editor-error bg-opacity-20 border-l-4 border-editor-error;
+  }
+
+  .console-output {
+    @apply font-mono p-4 border-t border-editor-line bg-editor-bg text-editor-text overflow-y-auto;
+    max-height: 12rem;
+  }
+
+  .syntax-keyword {
+    @apply text-editor-keyword;
+  }
+  
+  .syntax-string {
+    @apply text-editor-string;
+  }
+  
+  .syntax-number {
+    @apply text-editor-number;
+  }
+  
+  .syntax-function {
+    @apply text-editor-function;
+  }
+  
+  .syntax-operator {
+    @apply text-editor-operator;
+  }
+  
+  .syntax-variable {
+    @apply text-editor-variable;
+  }
+  
+  .syntax-comment {
+    @apply text-editor-comment;
   }
 }
